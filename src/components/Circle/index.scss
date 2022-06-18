@@ -1,0 +1,48 @@
+$animation-duration: 1s;
+$animation-start-delay: 0.3s;
+.circle-container {
+	height: var(--circle-size);
+	width: var(--circle-size);
+	position: absolute;
+	transform: translate(-50%, -50%);
+	animation: scale-animation 1s ease-in-out forwards infinite alternate, grow-scale 0.2s ease-in-out forwards;
+	.outer {
+		transform-origin: 50px 50px;
+		stroke-dashoffset: 276.46;
+		animation: loader-fill-up $animation-duration $animation-start-delay linear forwards,
+			spin $animation-duration $animation-start-delay cubic-bezier(0.455, 0.03, 0.515, 0.955);
+	}
+}
+@keyframes grow-scale {
+	0% {
+		transform: scale(0);
+	}
+	100% {
+		transform: scale(1);
+	}
+}
+@keyframes loader-fill-up {
+	0% {
+		stroke-dashoffset: 270;
+	}
+	100% {
+		stroke-dashoffset: 0;
+	}
+}
+
+@keyframes spin {
+	0% {
+		transform: rotate(0);
+	}
+	100% {
+		transform: rotate(400deg);
+	}
+}
+@keyframes scale-animation {
+	0% {
+		transform: scale(1);
+	}
+	100% {
+		transform: scale(1.1);
+	}
+}

@@ -1,0 +1,33 @@
+.sm-flat-button {
+	width: 100%;
+	height: 40px;
+	color: white;
+	background: #272727;
+	font-size: 23px;
+	opacity: 1;
+	cursor: pointer;
+	text-transform: uppercase;
+	box-shadow: 0 0 0 3px transparent;
+	border: none;
+	border-radius: 10px;
+	font-weight: 600;
+
+	&.click {
+		animation-name: flat-button-click;
+		animation-duration: 0.3s;
+		animation-timing-function: ease-in;
+		animation-iteration-count: 1;
+	}
+
+	@keyframes flat-button-click {
+		0% {
+			box-shadow: 0 0 0 3px transparent;
+		}
+		50% {
+			box-shadow: 0 0 0 3px #040024;
+		}
+		100% {
+			box-shadow: 0 0 0 3px transparent;
+		}
+	}
+}
