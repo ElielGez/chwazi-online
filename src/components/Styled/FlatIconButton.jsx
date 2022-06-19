@@ -1,14 +1,20 @@
 import React from 'react';
-import { contencateClassNames } from '../../utils/helpers';
+import { conditionalClassNames } from '../../utils/helpers';
 import FlatButton from './FlatButton';
 import './FlatIconButton.scss'
 
 // like FlatButton, but with an icon instead of text
 // variant = 'rounded'
 const FlatIconButton = (props) => {
-    const {className, variant, ...forwardProps} = props
+    const {className, variant,toggle,disabled, ...forwardProps} = props
 
-    const forwardClassName = contencateClassNames('sm-flat-icon-button', variant, className)
+    const forwardClassName = conditionalClassNames({
+        'sm-flat-icon-button': true,
+        [className]: Boolean(className),
+        [variant]: Boolean(variant),
+        'disabled':Boolean(disabled),
+        'toggle': Boolean(toggle)
+    });
 
     return (
         <FlatButton className={forwardClassName} {...forwardProps}>

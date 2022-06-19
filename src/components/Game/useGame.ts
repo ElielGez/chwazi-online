@@ -1,9 +1,6 @@
 import { PointerEventHandler, useMemo, useState } from 'react';
 import { ICircleType } from '../Circle/types';
-import { FingersGame, GroupsGame, IGame } from './types';
-
-const DEFAULT_FINGERS_NUMBER = 1;
-const DEFAULT_GROUPS_NUMBER = 2;
+import { FingersGame, GroupsGame, IGame, DEFAULT_FINGERS_NUMBER, DEFAULT_GROUPS_NUMBER } from './types';
 
 const useGame = () => {
 	const [circles, setCircles] = useState<ICircleType[]>([]);
@@ -18,14 +15,14 @@ const useGame = () => {
 	}, []);
 	const [game, setGame] = useState<IGame>(fingersGame);
 
-	const setGroupsGame = ({ isOnline, numberGroups }: { isOnline: boolean; numberGroups: number }) => {
-		const newGame = { ...groupsGame } as GroupsGame;
+	const setGroupsGame = ({ isOnline, numberGroups }: { isOnline?: boolean; numberGroups?: number }) => {
+		const newGame = groupsGame; // TODO: check if its not a problem
 		if (isOnline) newGame.isOnline = isOnline;
 		if (numberGroups) newGame.number = numberGroups;
 		setGame(newGame);
 	};
-	const setFingersGame = ({ isOnline, numberFingers }: { isOnline: boolean; numberFingers: number }) => {
-		const newGame = { ...fingersGame } as FingersGame;
+	const setFingersGame = ({ isOnline, numberFingers }: { isOnline?: boolean; numberFingers?: number }) => {
+		const newGame = fingersGame; // TODO: check if its not a problem
 		if (isOnline) newGame.isOnline = isOnline;
 		if (numberFingers) newGame.number = numberFingers;
 		setGame(newGame);

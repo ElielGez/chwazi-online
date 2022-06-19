@@ -1,16 +1,18 @@
+$button-size: 50px;
 .sm-flat-button {
-	width: 100%;
-	height: 40px;
-	color: white;
-	background: #272727;
-	font-size: 23px;
+	min-width: 80px;
+	height: $button-size;
+	color: var(--flat-button-color);
+	background: var(--flat-button-background);
+	font-size: 20px;
 	opacity: 1;
 	cursor: pointer;
 	text-transform: uppercase;
 	box-shadow: 0 0 0 3px transparent;
 	border: none;
-	border-radius: 10px;
+	border-radius: $button-size;
 	font-weight: 600;
+	position: relative;
 
 	&.click {
 		animation-name: flat-button-click;
@@ -21,13 +23,13 @@
 
 	@keyframes flat-button-click {
 		0% {
-			box-shadow: 0 0 0 3px transparent;
+			box-shadow: 0 0px 3px 2px transparent;
 		}
 		50% {
-			box-shadow: 0 0 0 3px #040024;
+			box-shadow: 0 0px 3px 2px var(--flat-button-click-box-shadow);
 		}
 		100% {
-			box-shadow: 0 0 0 3px transparent;
+			box-shadow: 0 0px 3px 2px transparent;
 		}
 	}
 }

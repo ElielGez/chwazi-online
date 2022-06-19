@@ -4,13 +4,15 @@ import { getRandomColor } from '../../utils/colors';
 import { calcVhToPx, CIRCLE_VH } from '../../utils/dimensions';
 import { ICircleType } from '../Circle/types';
 
+export const DEFAULT_FINGERS_NUMBER = 1;
+export const DEFAULT_GROUPS_NUMBER = 2;
 export interface IGameContext {
 	game?: IGame;
 	circles: ICircleType[];
 }
 type IStopGameFunc = () => void;
 type IRestartGameFunc = (winnerLogicFunc: () => void) => void;
-type gameMode = 'fingers' | 'groups';
+export type gameMode = 'fingers' | 'groups';
 export interface IGame {
 	isOnline: boolean;
 	mode: gameMode;
@@ -132,7 +134,7 @@ export class GroupsGame extends Game {
 	}
 	onFingerDown(e: PointerEvent<HTMLDivElement> | undefined, circles: ICircleType[]): ICircleType[] | undefined {
 		this.stopGame();
-		const newCircles = super.onFingerDown(e, circles, '#dadada');
+		const newCircles = super.onFingerDown(e, circles, '#d4d4d4');
 		if (!newCircles) return;
 
 		if (newCircles.length > this.number) if (this.restartGame) this.restartGame(this.winnerLogicFunc.bind(this, newCircles));

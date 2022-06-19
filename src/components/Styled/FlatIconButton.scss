@@ -1,11 +1,10 @@
+$button-size: 50px;
 .sm-flat-icon-button {
-	width: 40px;
+	min-width: $button-size;
+	min-height: $button-size;
+	max-height: $button-size;
+	max-width: $button-size;
 	padding: 5px;
-
-	path {
-		color: blue;
-		stroke: blue;
-	}
 
 	&.rounded {
 		border-radius: 100%;
@@ -13,5 +12,33 @@
 		display: flex;
 		justify-content: center;
 		align-items: center;
+	}
+	&.disabled {
+		background-color: #7d7d7d;
+		cursor: not-allowed;
+	}
+	&.toggle {
+		color: var(--toggle-button-color);
+		&::after {
+			content: '';
+			width: 0;
+			height: 0;
+			animation: toggle-background 0.3s ease-in-out forwards;
+			background: var(--togble-button-linear-background);
+			position: absolute;
+			border-radius: inherit;
+			z-index: -1;
+		}
+	}
+
+	@keyframes toggle-background {
+		0% {
+			width: 0;
+			height: 0;
+		}
+		100% {
+			width: 100%;
+			height: 100%;
+		}
 	}
 }
