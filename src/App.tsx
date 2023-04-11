@@ -1,14 +1,29 @@
 import React, { useEffect, useState } from 'react';
 import Game from './components/Game';
 import { CIRCLE_VH } from './utils/dimensions';
+import { IThemeContext } from './entities/Theme';
+import { IGameContext } from './entities/Game';
+import { v4 } from 'uuid';
+import { IClient } from './entities/Cilent';
+import { useSearchParams } from 'react-router-dom';
+import { useSnackbar } from 'notistack';
+import { Online } from './entities/Online';
+import { Room } from './entities/Room';
+import { copyToClipboard } from './utils/copyclipboard';
+import { getGameLink } from './utils/helpers';
 
-interface IThemeContext {
-	darkMode?: boolean;
-	setDarkMode?: (darkMode: boolean) => void;
-}
 export const ThemeContext = React.createContext({} as IThemeContext);
+export const GameContext = React.createContext({} as IGameContext);
+
 function App() {
+	const [client, setClient] = useState<IClient>({ id: v4() });
+	const [online, setOnline] = useState<Online>();
 	const [darkMode, setDarkMode] = useState(true);
+	const [searchParams] = useSearchParams();
+	const { enqueueSnackbar } = useSnackbar();
+	const roomId = searchParams?.get('roomid');
+	const isHost = !Boolean(roomId);
+
 	useEffect(() => {
 		if (darkMode) {
 			document.body.classList.add('dark-theme');
@@ -16,12 +31,45 @@ function App() {
 			document.body.classList.remove('dark-theme');
 		}
 	}, [darkMode]);
+
+	useEffect(() => {
+		if (roomId) {
+			const name = window.prompt('Please enter your name');
+			if (name) {
+				const newClient = { ...client, name };
+				const room = new Room(roomId, newClient);
+				const online = new Online(room, false, enqueueSnackbar);
+				online?.join(roomId, newClient);
+				setOnline(online);
+				setClient(newClient);
+			}
+		}
+	}, []);
+
 	useEffect(() => {
 		document.documentElement.style.setProperty('--circle-size', CIRCLE_VH + 'vh');
 	}, []);
+
+	const onIsOnline = (isOnline: boolean, clientName?: string) => {
+		if (isOnline) {
+			const newClient = { ...client, name: clientName };
+			const room = new Room(v4(), newClient);
+			setOnline(new Online(room, isHost, enqueueSnackbar));
+			const link = `${getGameLink()}?roomid=${room.id}`;
+			copyToClipboard(link);
+			enqueueSnackbar('Linked copied to clipboard', { variant: 'success' });
+			return link;
+		} else {
+			online?.disconnect();
+			setOnline(undefined);
+		}
+	};
+
 	return (
 		<ThemeContext.Provider value={{ darkMode, setDarkMode }}>
-			<Game />
+			<GameContext.Provider value={{ isHost, client, setClient, online, onIsOnline }}>
+				<Game />
+			</GameContext.Provider>
 		</ThemeContext.Provider>
 	);
 }

@@ -8,6 +8,7 @@ body {
 code {
 	font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
 }
+
 html,
 body,
 #root {
@@ -17,15 +18,17 @@ body,
 	overflow: hidden;
 	touch-action: none;
 }
+
 body {
 	--game-background: #eee;
 	--flat-button-background: #eee;
 	--flat-button-color: #44abefa8;
 	--toggle-button-color: white;
-	--togble-button-linear-background: linear-gradient(90deg, #44abefa8, #376eddad);
+	--togble-button-linear-background: linear-gradient(90deg, #44abefa8, #44abefa8);
 	--flat-button-click-box-shadow: #eee;
 	--actions-box-shadow-color: #c9c9c94f;
 }
+
 body.dark-theme {
 	--game-background: #04081a;
 	--flat-button-background: #272727;
@@ -33,4 +36,8 @@ body.dark-theme {
 	--togble-button-linear-background: linear-gradient(90deg, #092131, #132241f5);
 	--flat-button-click-box-shadow: #474747;
 	--actions-box-shadow-color: #0000004f;
+}
+
+.SnackbarItem-contentRoot {
+	opacity: 0.5;
 }

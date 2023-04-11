@@ -17,7 +17,7 @@ const FlatIconButton = (props) => {
     });
 
     return (
-        <FlatButton className={forwardClassName} {...forwardProps}>
+        <FlatButton className={forwardClassName} disabled={disabled} {...forwardProps}>
             {props.children}
         </FlatButton>
     );

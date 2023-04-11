@@ -1,11 +1,5 @@
 import { FunctionComponent } from 'react';
-export type ICircleType = {
-	id: number;
-	color: string;
-	left: string;
-	top: string;
-	name?: string;
-};
+import { ICircleType } from '../../entities/Circle';
 
 type Props = ICircleType & {};
 

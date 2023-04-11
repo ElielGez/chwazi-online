@@ -1,11 +1,11 @@
 import { FunctionComponent } from 'react';
-import { IGame } from '../Game/types';
+import { IGame } from '../../entities/Game';
+import { updateGameProps } from '../Game/types';
 
 type Props = {
 	visible: boolean;
 	game: IGame;
-	setFingersGame: ({ isOnline, numberFingers }: { isOnline?: boolean; numberFingers?: number }) => void;
-	setGroupsGame: ({ isOnline, numberGroups }: { isOnline?: boolean; numberGroups?: number }) => void;
+	onGameChanged: ({ number }: updateGameProps) => void;
 };
 
 export type Type = FunctionComponent<Props>;
