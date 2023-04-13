@@ -40,4 +40,8 @@ body.dark-theme {
 
 .SnackbarItem-contentRoot {
 	opacity: 0.5;
+
+	&.yellow {
+		background-color: rgb(78 72 16) !important;
+	}
 }

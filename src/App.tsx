@@ -11,6 +11,7 @@ import { Online } from './entities/Online';
 import { Room } from './entities/Room';
 import { copyToClipboard } from './utils/copyclipboard';
 import { getGameLink } from './utils/helpers';
+import useSystemAlerts from './hooks/useSystemAlerts';
 
 export const ThemeContext = React.createContext({} as IThemeContext);
 export const GameContext = React.createContext({} as IGameContext);
@@ -21,6 +22,7 @@ function App() {
 	const [darkMode, setDarkMode] = useState(true);
 	const [searchParams] = useSearchParams();
 	const { enqueueSnackbar } = useSnackbar();
+	const { showAlerts } = useSystemAlerts(enqueueSnackbar);
 	const roomId = searchParams?.get('roomid');
 	const isHost = !Boolean(roomId);
 
@@ -48,6 +50,7 @@ function App() {
 
 	useEffect(() => {
 		document.documentElement.style.setProperty('--circle-size', CIRCLE_VH + 'vh');
+		showAlerts();
 	}, []);
 
 	const onIsOnline = (isOnline: boolean, clientName?: string) => {
