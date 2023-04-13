@@ -3,6 +3,7 @@ import { GameContext } from '../../App';
 import { ICircleType } from '../../entities/Circle';
 import { FingersGame, GroupsGame, IGame } from '../../entities/Game';
 import { DEFAULT_FINGERS_NUMBER, DEFAULT_GROUPS_NUMBER, updateGameProps } from './types';
+import { crossDeviceCalcPosition } from '../../utils/dimensions';
 
 const useGame = () => {
 	const { online, isHost } = useContext(GameContext);
@@ -11,7 +12,7 @@ const useGame = () => {
 	const onWinners = useCallback(
 		(winners: ICircleType[]) => {
 			if (online) online.emitWinners(winners);
-			setCircles(winners);
+			onSetCircles(winners);
 		},
 		[online],
 	);
@@ -33,16 +34,16 @@ const useGame = () => {
 	useEffect(() => {
 		if (online) {
 			online.socket.on('pointer-down', (circles: ICircleType[]) => {
-				setCircles(circles);
+				onSetCircles(circles);
 			});
 			online.socket.on('pointer-up', (circles: ICircleType[]) => {
-				setCircles(circles);
+				onSetCircles(circles);
 			});
 			online.socket.on('pointer-move', (circles: ICircleType[]) => {
-				setCircles(circles);
+				onSetCircles(circles);
 			});
 			online.socket.on('winners', (circles: ICircleType[]) => {
-				setCircles(circles);
+				onSetCircles(circles);
 			});
 		}
 	}, [online]);
@@ -68,14 +69,14 @@ const useGame = () => {
 		const newCircles = game.onFingerDown(e, circles);
 		if (newCircles) {
 			if (online) online.emitPointerDown(newCircles);
-			setCircles(newCircles);
+			onSetCircles(newCircles);
 		}
 	};
 	const onPointerUp: PointerEventHandler<HTMLDivElement> | undefined = e => {
 		const newCircles = game.onFingerUp(e, circles);
 		if (newCircles) {
 			if (online) online.emitPointerUp(newCircles);
-			setCircles(newCircles);
+			onSetCircles(newCircles);
 		}
 	};
 	const onPointerMove: PointerEventHandler<HTMLDivElement> | undefined = e => {
@@ -83,6 +84,13 @@ const useGame = () => {
 		if (newCircles) {
 			if (online) online.emitPointerMove(newCircles);
 		}
+	};
+	const onSetCircles = (circles: ICircleType[]) => {
+		const newCircles = circles.map(circle => {
+			const { left, top } = crossDeviceCalcPosition(circle);
+			return { ...circle, left, top, origDeviceWidth: window.innerWidth, origDeviceHeight: window.innerHeight };
+		});
+		setCircles(newCircles);
 	};
 
 	return {

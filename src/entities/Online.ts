@@ -13,7 +13,6 @@ export class Online {
 	enqueueSnackbar?: enqueueSnackbarType;
 	constructor(room: IRoom, isHost: boolean, enqueueSnackbar?: enqueueSnackbarType) {
 		this.room = room;
-		// this.socket = io('http://localhost:3001');
 		this.socket = io(getSocketLink());
 		this.enqueueSnackbar = enqueueSnackbar;
 		if (isHost) {

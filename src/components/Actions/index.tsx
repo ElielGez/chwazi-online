@@ -50,7 +50,7 @@ const Actions: Type = ({ visible, game, onGameChanged }) => {
 				</NativeSelect>
 				<input value={number} readOnly />
 			</FlatIconButton>
-			<FlatIconButton
+			{/* <FlatIconButton
 				variant='rounded'
 				toggle={isOnline}
 				onClick={() => {
@@ -63,7 +63,7 @@ const Actions: Type = ({ visible, game, onGameChanged }) => {
 					} else onIsOnline(!isOnline);
 				}}>
 				<LanguageIcon />
-			</FlatIconButton>
+			</FlatIconButton> */}
 			<FlatIconButton
 				variant='rounded'
 				toggle={theme.darkMode}

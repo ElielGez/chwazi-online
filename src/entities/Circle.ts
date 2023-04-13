@@ -1,7 +1,9 @@
 export type ICircleType = {
 	id: number;
 	color: string;
-	left: string;
-	top: string;
+	left: number;
+	top: number;
 	name?: string;
+	origDeviceWidth?: number;
+	origDeviceHeight?: number;
 };

@@ -1,6 +1,6 @@
 import { PointerEvent } from 'react';
 import { getRandomColor } from '../utils/colors';
-import { calcVhToPx, CIRCLE_VH } from '../utils/dimensions';
+import { calcVhToPx, CIRCLE_VH, crossDeviceCalcPosition } from '../utils/dimensions';
 import { randomGroups, randomSingle } from '../utils/randomizeAlgo';
 import { IClient } from './Cilent';
 import { ICircleType } from './Circle';
@@ -66,8 +66,8 @@ export class Game implements IGame {
 		newCircles.push({
 			id: e.pointerId,
 			color,
-			left: `${positions.pageX}px`,
-			top: `${positions.pageY}px`,
+			left: positions.pageX,
+			top: positions.pageY,
 		});
 
 		return newCircles;
@@ -90,8 +90,11 @@ export class Game implements IGame {
 		circle.style.top = positions.pageY + 'px';
 
 		const newCircles = [...circles].map(circle => {
-			if (circle.id === e.pointerId) return { ...circle, left: positions.pageX + 'px', top: positions.pageY + 'px' };
-			else return circle;
+			if (circle.id === e.pointerId) {
+				const newCircle = { ...circle, left: positions.pageX, top: positions.pageY };
+				const { left, top } = crossDeviceCalcPosition(newCircle);
+				return { ...newCircle, left, top };
+			} else return circle;
 		});
 		return newCircles;
 	}
