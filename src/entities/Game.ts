@@ -5,6 +5,7 @@ import { randomGroups, randomSingle } from '../utils/randomizeAlgo';
 import { IClient } from './Cilent';
 import { ICircleType } from './Circle';
 import { Online } from './Online';
+const fingerSensitive = 5;
 
 type IStopGameFunc = () => void;
 type IRestartGameFunc = (winnerLogicFunc: () => void) => void;
@@ -15,6 +16,7 @@ export interface IGame {
 	number: number;
 	timeoutIntervals: NodeJS.Timeout[];
 	onWinners?: (winners: ICircleType[]) => void;
+	setOnWinners: (onWinners: (winners: ICircleType[]) => void) => void;
 	restartGame: IRestartGameFunc;
 	stopGame: IStopGameFunc;
 	setIsOnline: (isOnline: boolean) => void;
@@ -36,6 +38,9 @@ export class Game implements IGame {
 		this.number = number;
 	}
 	onWinners?: (winners: ICircleType[]) => void;
+	setOnWinners = (onWinners: (winners: ICircleType[]) => void) => {
+		this.onWinners = onWinners;
+	};
 	setIsOnline = (isOnline: boolean) => {
 		this.isOnline = isOnline;
 	};
@@ -84,16 +89,18 @@ export class Game implements IGame {
 		if (!e) return;
 
 		const circle = document.getElementById('' + e.pointerId);
-		if (circle === null) return;
+		const _circle = circles.find(circle => circle.id === e.pointerId);
+		if (!circle || !_circle) return;
+
 		const positions = this.calcPositions(e.pageX, e.pageY);
+		if (Math.abs(_circle.left - positions.pageX) < fingerSensitive || Math.abs(_circle.top - positions.pageY) < fingerSensitive) return circles; // for sensitive reasons
+
 		circle.style.left = positions.pageX + 'px';
 		circle.style.top = positions.pageY + 'px';
 
 		const newCircles = [...circles].map(circle => {
 			if (circle.id === e.pointerId) {
-				const newCircle = { ...circle, left: positions.pageX, top: positions.pageY };
-				const { left, top } = crossDeviceCalcPosition(newCircle);
-				return { ...newCircle, left, top };
+				return { ...circle, left: positions.pageX, top: positions.pageY };
 			} else return circle;
 		});
 		return newCircles;

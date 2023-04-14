@@ -27,6 +27,11 @@ function App() {
 	const isHost = !Boolean(roomId);
 
 	useEffect(() => {
+		document.documentElement.style.setProperty('--circle-size', CIRCLE_VH + 'vh');
+		showAlerts();
+	}, []);
+
+	useEffect(() => {
 		if (darkMode) {
 			document.body.classList.add('dark-theme');
 		} else {
@@ -36,21 +41,18 @@ function App() {
 
 	useEffect(() => {
 		if (roomId) {
-			const name = window.prompt('Please enter your name');
-			if (name) {
-				const newClient = { ...client, name };
-				const room = new Room(roomId, newClient);
-				const online = new Online(room, false, enqueueSnackbar);
-				online?.join(roomId, newClient);
-				setOnline(online);
-				setClient(newClient);
-			}
+			setTimeout(() => {
+				const name = window.prompt('Please enter your name');
+				if (name) {
+					const newClient = { ...client, name };
+					const room = new Room(roomId, newClient);
+					const online = new Online(room, false, enqueueSnackbar);
+					online?.join(roomId, newClient);
+					setOnline(online);
+					setClient(newClient);
+				}
+			}, 0);
 		}
-	}, []);
-
-	useEffect(() => {
-		document.documentElement.style.setProperty('--circle-size', CIRCLE_VH + 'vh');
-		showAlerts();
 	}, []);
 
 	const onIsOnline = (isOnline: boolean, clientName?: string) => {

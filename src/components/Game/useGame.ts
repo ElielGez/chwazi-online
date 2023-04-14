@@ -12,16 +12,16 @@ const useGame = () => {
 	const onWinners = useCallback(
 		(winners: ICircleType[]) => {
 			if (online) online.emitWinners(winners);
-			onSetCircles(winners);
+			setCircles(winners);
 		},
 		[online],
 	);
 	const fingersGame = useMemo(() => {
 		return new FingersGame(false, DEFAULT_FINGERS_NUMBER, onWinners);
-	}, [onWinners]);
+	}, []);
 	const groupsGame = useMemo(() => {
 		return new GroupsGame(false, DEFAULT_GROUPS_NUMBER, onWinners);
-	}, [onWinners]);
+	}, []);
 	const [game, setGame] = useState<IGame>(fingersGame);
 
 	useEffect(() => {
@@ -31,19 +31,24 @@ const useGame = () => {
 			});
 		}
 	}, [online, isHost]);
+
+	useEffect(() => {
+		game.setOnWinners(onWinners);
+	}, [onWinners]);
+
 	useEffect(() => {
 		if (online) {
 			online.socket.on('pointer-down', (circles: ICircleType[]) => {
-				onSetCircles(circles);
+				setCircles(calculateOrigDevicePositions(circles));
 			});
 			online.socket.on('pointer-up', (circles: ICircleType[]) => {
-				onSetCircles(circles);
+				setCircles(calculateOrigDevicePositions(circles));
 			});
 			online.socket.on('pointer-move', (circles: ICircleType[]) => {
-				onSetCircles(circles);
+				// setCircles(calculateOrigDevicePositions(circles)); // for now disable online movements due to a lot of events that coming from websocket
 			});
 			online.socket.on('winners', (circles: ICircleType[]) => {
-				onSetCircles(circles);
+				setCircles(calculateOrigDevicePositions(circles));
 			});
 		}
 	}, [online]);
@@ -66,31 +71,39 @@ const useGame = () => {
 		if (online && isHost) online.emitGameChanged({ mode, number });
 	};
 	const onPointerDown: PointerEventHandler<HTMLDivElement> | undefined = e => {
-		const newCircles = game.onFingerDown(e, circles);
+		const newCircles = setOrigDeviceDimensions(game.onFingerDown(e, circles));
 		if (newCircles) {
 			if (online) online.emitPointerDown(newCircles);
-			onSetCircles(newCircles);
+			setCircles(newCircles);
 		}
 	};
 	const onPointerUp: PointerEventHandler<HTMLDivElement> | undefined = e => {
-		const newCircles = game.onFingerUp(e, circles);
+		const newCircles = setOrigDeviceDimensions(game.onFingerUp(e, circles));
 		if (newCircles) {
 			if (online) online.emitPointerUp(newCircles);
-			onSetCircles(newCircles);
+			setCircles(newCircles);
 		}
 	};
 	const onPointerMove: PointerEventHandler<HTMLDivElement> | undefined = e => {
-		const newCircles = game.onFingerMove(e, circles);
-		if (newCircles) {
+		const newCircles = setOrigDeviceDimensions(game.onFingerMove(e, circles));
+		if (newCircles?.length) {
 			if (online) online.emitPointerMove(newCircles);
 		}
 	};
-	const onSetCircles = (circles: ICircleType[]) => {
-		const newCircles = circles.map(circle => {
-			const { left, top } = crossDeviceCalcPosition(circle);
-			return { ...circle, left, top, origDeviceWidth: window.innerWidth, origDeviceHeight: window.innerHeight };
-		});
-		setCircles(newCircles);
+	const setOrigDeviceDimensions = (circles?: ICircleType[]) => {
+		const newCircles =
+			circles?.map(circle => {
+				return { ...circle, origDeviceWidth: window.innerWidth, origDeviceHeight: window.innerHeight };
+			}) || [];
+		return newCircles;
+	};
+	const calculateOrigDevicePositions = (circles?: ICircleType[]) => {
+		const newCircles =
+			circles?.map(circle => {
+				const { left, top } = crossDeviceCalcPosition(circle);
+				return { ...circle, left, top };
+			}) || [];
+		return newCircles;
 	};
 
 	return {
