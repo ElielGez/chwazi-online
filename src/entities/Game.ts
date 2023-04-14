@@ -93,7 +93,7 @@ export class Game implements IGame {
 		if (!circle || !_circle) return;
 
 		const positions = this.calcPositions(e.pageX, e.pageY);
-		if (Math.abs(_circle.left - positions.pageX) < fingerSensitive || Math.abs(_circle.top - positions.pageY) < fingerSensitive) return circles; // for sensitive reasons
+		// if (Math.abs(_circle.left - positions.pageX) < fingerSensitive || Math.abs(_circle.top - positions.pageY) < fingerSensitive) return circles; // for sensitive reasons
 
 		circle.style.left = positions.pageX + 'px';
 		circle.style.top = positions.pageY + 'px';
