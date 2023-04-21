@@ -22,7 +22,7 @@ const useGame = () => {
 			if (online) online.emitWinners(winners);
 			setCircles(winners);
 		},
-		[online],
+		[online, playFinish],
 	);
 	const fingersGame = useMemo(() => {
 		return new FingersGame(false, DEFAULT_FINGERS_NUMBER, onWinners);
