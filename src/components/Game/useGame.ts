@@ -4,17 +4,25 @@ import { ICircleType } from '../../entities/Circle';
 import { FingersGame, GroupsGame, IGame } from '../../entities/Game';
 import { DEFAULT_FINGERS_NUMBER, DEFAULT_GROUPS_NUMBER, updateGameProps } from './types';
 import { crossDeviceCalcPosition } from '../../utils/dimensions';
+import useSound from 'use-sound';
+import inSound from '../../assets/sounds/in.mp3';
+import outSound from '../../assets/sounds/out.mp3';
+import finishSound from '../../assets/sounds/finish.mp3';
 
 const useGame = () => {
 	const { online, isHost } = useContext(GameContext);
 	const [circles, setCircles] = useState<ICircleType[]>([]);
+	const [playIn] = useSound(inSound, { volume: 0.2 });
+	const [playOut] = useSound(outSound, { volume: 0.2 });
+	const [playFinish] = useSound(finishSound, { volume: 0.2 });
 
 	const onWinners = useCallback(
 		(winners: ICircleType[]) => {
+			playFinish();
 			if (online) online.emitWinners(winners);
 			setCircles(winners);
 		},
-		[online],
+		[online, playFinish],
 	);
 	const fingersGame = useMemo(() => {
 		return new FingersGame(false, DEFAULT_FINGERS_NUMBER, onWinners);
@@ -71,6 +79,7 @@ const useGame = () => {
 		if (online && isHost) online.emitGameChanged({ mode, number });
 	};
 	const onPointerDown: PointerEventHandler<HTMLDivElement> | undefined = e => {
+		playIn();
 		const newCircles = setOrigDeviceDimensions(game.onFingerDown(e, circles));
 		if (newCircles) {
 			if (online) online.emitPointerDown(newCircles);
@@ -78,6 +87,7 @@ const useGame = () => {
 		}
 	};
 	const onPointerUp: PointerEventHandler<HTMLDivElement> | undefined = e => {
+		playOut();
 		const newCircles = setOrigDeviceDimensions(game.onFingerUp(e, circles));
 		if (newCircles) {
 			if (online) online.emitPointerUp(newCircles);
